@@ -6,11 +6,12 @@ import * as GeminiService from '../services/geminiService';
 interface AIControlsProps {
   photos: Photo[];
   onCaptionGenerated: (caption: string) => void;
+  onError?: (error: string) => void;
 }
 
 const ASPECT_RATIOS: AspectRatio[] = ['1:1', '2:3', '3:2', '3:4', '4:3', '9:16', '16:9', '21:9'];
 
-const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated }) => {
+const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated, onError }) => {
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisText, setAnalysisText] = useState<string>('');
   
@@ -25,19 +26,31 @@ const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated }) =
   const handleGenerateCaption = async () => {
     if (photos.length === 0) return;
     setCaptioning(true);
-    const caption = await GeminiService.generatePhotoStripCaption(photos.length);
-    onCaptionGenerated(caption);
-    setCaptioning(false);
+    try {
+      const caption = await GeminiService.generatePhotoStripCaption(photos.length);
+      onCaptionGenerated(caption);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error generando caption';
+      onError?.(errorMessage);
+    } finally {
+      setCaptioning(false);
+    }
   };
 
   // 2. Analyze Vibe
   const handleAnalyze = async () => {
     if (photos.length === 0) return;
     setAnalyzing(true);
-    // Analyze the first photo as a sample
-    const result = await GeminiService.analyzePhotoVibe(photos[0].dataUrl);
-    setAnalysisText(result);
-    setAnalyzing(false);
+    try {
+      // Analyze the first photo as a sample
+      const result = await GeminiService.analyzePhotoVibe(photos[0].dataUrl);
+      setAnalysisText(result);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Error analizando vibe';
+      onError?.(errorMessage);
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   // 3. Generate Image
@@ -49,10 +62,12 @@ const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated }) =
     try {
         const result = await GeminiService.generateCreativeImage(genPrompt, selectedRatio);
         setGeneratedImage(result);
-    } catch (err) {
-        // Error handled in service, but we clean up loading state
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Error generando imagen';
+        onError?.(errorMessage);
+    } finally {
+        setGenerating(false);
     }
-    setGenerating(false);
   };
 
   if (photos.length === 0) {

@@ -29,3 +29,10 @@ export interface ApiError {
   code?: string;
   message: string;
 }
+
+export interface SessionData {
+  photos: Photo[];
+  caption: string;
+  timestamp: number;
+  sessionId: string;
+}

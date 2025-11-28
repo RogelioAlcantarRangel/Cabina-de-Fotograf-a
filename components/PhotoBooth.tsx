@@ -1,13 +1,11 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react';
 import { Camera, RefreshCcw, Download, Sparkles } from 'lucide-react';
 import { Photo } from '../types';
+import { boothConfig } from '../config/boothConfig';
 
 interface PhotoBoothProps {
   onPhotosTaken: (photos: Photo[]) => void;
 }
-
-const COUNTDOWN_START = 3;
-const TOTAL_PHOTOS = 5;
 
 const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -17,7 +15,7 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
   const [isSessionActive, setIsSessionActive] = useState(false);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const [photosLeft, setPhotosLeft] = useState(TOTAL_PHOTOS);
+  const [photosLeft, setPhotosLeft] = useState(boothConfig.photoCount);
   const [flash, setFlash] = useState(false);
   const [error, setError] = useState<string>('');
 
@@ -102,7 +100,7 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
     const runSequence = async () => {
       if (photosLeft > 0) {
         // Start Countdown
-        for (let i = COUNTDOWN_START; i > 0; i--) {
+        for (let i = boothConfig.countdownSeconds; i > 0; i--) {
           setCountdown(i);
           await new Promise(resolve => setTimeout(resolve, 1000));
         }
@@ -126,7 +124,7 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
 
   const startSession = () => {
     setPhotos([]);
-    setPhotosLeft(TOTAL_PHOTOS);
+    setPhotosLeft(boothConfig.photoCount);
     setIsSessionActive(true);
   };
 
@@ -173,7 +171,7 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
           </span>
           {isSessionActive && (
             <span className="bg-black/50 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">
-              {TOTAL_PHOTOS - photosLeft + 1} / {TOTAL_PHOTOS}
+              {boothConfig.photoCount - photosLeft + 1} / {boothConfig.photoCount}
             </span>
           )}
         </div>
