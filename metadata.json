@@ -1,0 +1,7 @@
+{
+  "name": "AI Retro Photo Booth",
+  "description": "A classic photo booth experience with modern AI features. Take 5 photos, analyze your vibe, and generate creative backdrops.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
