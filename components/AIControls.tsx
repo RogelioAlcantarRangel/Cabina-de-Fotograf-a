@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wand2, BrainCircuit, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { Wand2, BrainCircuit, Image as ImageIcon, Loader2, Sparkles } from 'lucide-react';
 import { AspectRatio, Photo } from '../types';
 import * as GeminiService from '../services/geminiService';
 
@@ -58,7 +58,7 @@ const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated }) =
   if (photos.length === 0) {
     return (
       <div className="bg-zinc-900/50 rounded-xl p-8 text-center border border-zinc-800">
-        <SparklesIcon className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
+        <Sparkles className="w-12 h-12 text-zinc-700 mx-auto mb-4" />
         <p className="text-zinc-500">Take photos to unlock AI Magic features.</p>
       </div>
     );
@@ -170,9 +170,5 @@ const AIControls: React.FC<AIControlsProps> = ({ photos, onCaptionGenerated }) =
     </div>
   );
 };
-
-const SparklesIcon = ({ className }: { className?: string }) => (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 3v4"/><path d="M3 5h4"/><path d="M3 9h4"/></svg>
-);
 
 export default AIControls;

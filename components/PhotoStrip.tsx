@@ -29,6 +29,12 @@ const PhotoStrip: React.FC<PhotoStripProps> = ({ photos, caption }) => {
     return new Promise((resolve, reject) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
+      
+      if (!ctx) {
+        reject('Could not get canvas context');
+        return;
+      }
+      
       const photoWidth = 600;
       const photoHeight = 450; // 4:3 Aspect Ratio assumption
       const padding = 40;
@@ -40,11 +46,6 @@ const PhotoStrip: React.FC<PhotoStripProps> = ({ photos, caption }) => {
       
       canvas.width = photoWidth + (padding * 2);
       canvas.height = totalHeight;
-
-      if (!ctx) {
-        reject('Could not get canvas context');
-        return;
-      }
 
       // Background
       ctx.fillStyle = '#f4f4f5'; // zinc-100

@@ -12,7 +12,7 @@ const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 export const generatePhotoStripCaption = async (numPhotos: number): Promise<string> => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-flash-lite-latest', // Using the lite model alias as per instructions for "Fast AI responses"
+      model: 'gemini-2.5-flash', // Using the standard flash model for compatibility
       contents: `Generate a short, witty, and fun caption for a photo booth strip containing ${numPhotos} photos. Keep it under 10 words.`,
     });
     return response.text || "Capture the moment!";
@@ -29,10 +29,14 @@ export const generatePhotoStripCaption = async (numPhotos: number): Promise<stri
 export const analyzePhotoVibe = async (photoDataUrl: string): Promise<string> => {
   try {
     // Extract base64 data (remove "data:image/png;base64," prefix)
-    const base64Data = photoDataUrl.split(',')[1];
+    const parts = photoDataUrl.split(',');
+    if (parts.length < 2) {
+      throw new Error('Invalid data URL format');
+    }
+    const base64Data = parts[1];
     
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-preview',
+      model: 'gemini-2.5-pro',
       contents: {
         parts: [
           {
@@ -56,20 +60,14 @@ export const analyzePhotoVibe = async (photoDataUrl: string): Promise<string> =>
 
 /**
  * Generate a creative background/image with specific aspect ratio.
- * Model: gemini-3-pro-image-preview
+ * Model: gemini-2.5-pro
  */
 export const generateCreativeImage = async (prompt: string, aspectRatio: AspectRatio): Promise<string | null> => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-pro-image-preview',
+      model: 'gemini-2.5-pro',
       contents: {
-        parts: [{ text: prompt }]
-      },
-      config: {
-        imageConfig: {
-          aspectRatio: aspectRatio,
-          imageSize: "1K" // Defaulting to 1K
-        }
+        parts: [{ text: `Generate an image with aspect ratio ${aspectRatio}: ${prompt}` }]
       }
     });
 

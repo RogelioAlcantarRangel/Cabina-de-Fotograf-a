@@ -25,7 +25,11 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
   const startCamera = async () => {
     try {
       const mediaStream = await navigator.mediaDevices.getUserMedia({ 
-        video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: "user" },
+        video: { 
+          width: { ideal: 1280 }, 
+          height: { ideal: 720 }, 
+          facingMode: "user" as ConstrainDOMString
+        },
         audio: false 
       });
       setStream(mediaStream);
@@ -34,8 +38,9 @@ const PhotoBooth: React.FC<PhotoBoothProps> = ({ onPhotosTaken }) => {
       }
       setError('');
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Unknown camera error';
       console.error("Error accessing camera:", err);
-      setError('Could not access camera. Please allow permissions.');
+      setError(`Could not access camera: ${errorMessage}. Please check browser permissions.`);
     }
   };
 

@@ -1,6 +1,6 @@
 export interface Photo {
   id: string;
-  dataUrl: string; // Base64 image
+  dataUrl: string; // Base64 image data URL
   timestamp: number;
 }
 
@@ -16,9 +16,16 @@ export interface GeneratedImage {
 export interface AnalysisResult {
   text: string;
   loading: boolean;
+  error?: string;
 }
 
 export interface CaptionResult {
   text: string;
   loading: boolean;
+  error?: string;
+}
+
+export interface ApiError {
+  code?: string;
+  message: string;
 }
